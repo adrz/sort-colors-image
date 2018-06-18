@@ -105,9 +105,8 @@ class Pixel(object):
         if (distance > self.velocity):
             vec_pos_to_dest = vec_pos_to_dest / distance
 
-            position = self.position + (vec_pos_to_dest *
-                                        max(1.6, self.velocity *
-                                            distance))
+            position = self.position + (vec_pos_to_dest * self.velocity *
+                                        distance)
             # position = self.position + (vec_pos_to_dest * distance)
             position = np.uint32(np.round(position))
 
