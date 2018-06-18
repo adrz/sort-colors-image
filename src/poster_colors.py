@@ -3,7 +3,6 @@
 
 import cv2
 import numpy as np
-from scipy.spatial.distance import cdist
 from sklearn.cluster import KMeans
 
 
@@ -104,19 +103,20 @@ class Pixel(object):
         vec_pos_to_dest = self.destination - self.position
         distance = np.linalg.norm(vec_pos_to_dest)
 
-        if distance < 12:
+        if (distance > self.velocity):
+            vec_pos_to_dest = vec_pos_to_dest / distance
+
+            # position = self.position + (vec_pos_to_dest *
+            #                             max(1.6, self.velocity *
+            #                                 distance))
+            position = self.position + (vec_pos_to_dest * distance)
+            position = np.uint32(np.round(position))
+
+        else:
             self.position == self.destination
             return
 
         # Normalize the vector
-        vec_pos_to_dest = vec_pos_to_dest / distance
-
-        # position = self.position + (vec_pos_to_dest *
-        #                             max(1.6, self.velocity *
-        #                                 distance))
-
-        position = self.position + (vec_pos_to_dest * distance)
-        position = np.uint32(np.round(position))
 
         # Bound the position to the rectangle describes by its
         # width and height
@@ -129,6 +129,8 @@ class Pixel(object):
         if position[1] < 0:
             position[1] = 0
         self.position = position
+
+        # self.position = self.destination
         return
 
     def is_done(self):
@@ -172,15 +174,11 @@ def sort_colors(img_path):
                                nc)
     new_img = np.zeros((width, height, nc))
 
-    for i, c in zip(idx_sort, img):
-        new_img[i // height, i % height, :] = c
-
     for c, i in enumerate(idx_sort):
         new_img[c // height, c % height, :] = img[i, :]
 
     img_final = new_img
     img_final = cv2.cvtColor(np.uint8(img_final), cv2.COLOR_HSV2BGR)
-    img_res = cv2.cvtColor(np.uint8(img_res), cv2.COLOR_HSV2BGR)
     cv2.imwrite('test_idx_sort.png', img_final)
     cv2.imwrite('test_img_sort.png', img_res)
     image = Img(width, height, img, idx_sort, velocity=.1)
