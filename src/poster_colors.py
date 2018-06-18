@@ -52,7 +52,6 @@ class Img(object):
         coordinates = [(x.get_position(), x.ix) for x in self.pixels]
         for i, y in enumerate(coordinates):
             x, ix = y
-            print(i)
             xi, yi = x
             col = self.cols[ix, :]
             img[xi, yi] = col
@@ -106,10 +105,10 @@ class Pixel(object):
         if (distance > self.velocity):
             vec_pos_to_dest = vec_pos_to_dest / distance
 
-            # position = self.position + (vec_pos_to_dest *
-            #                             max(1.6, self.velocity *
-            #                                 distance))
-            position = self.position + (vec_pos_to_dest * distance)
+            position = self.position + (vec_pos_to_dest *
+                                        max(1.6, self.velocity *
+                                            distance))
+            # position = self.position + (vec_pos_to_dest * distance)
             position = np.uint32(np.round(position))
 
         else:
@@ -183,5 +182,6 @@ def sort_colors(img_path):
     cv2.imwrite('test_img_sort.png', img_res)
     image = Img(width, height, img, idx_sort, velocity=.1)
     for i in range(1000):
+        print('img: {}'.format(i+1))
         image.create_frame()
         image.next_frame()
