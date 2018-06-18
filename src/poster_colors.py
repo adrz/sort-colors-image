@@ -109,7 +109,7 @@ class Pixel(object):
                                         distance)
             # position = self.position + (vec_pos_to_dest * distance)
             position = np.uint32(np.round(position))
-
+            self.position == self.destination
         else:
             self.position == self.destination
             return
